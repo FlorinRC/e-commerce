@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - E-Commerce Shop</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; }
+    header {
+      background: #1a1a2e; color: white; padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header a { color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; }
+    .container { max-width: 900px; margin: 32px auto; padding: 0 24px; display: flex; gap: 32px; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #e94560; text-decoration: none; }
+    .col-left { flex: 1.4; }
+    .col-right { flex: 1; }
+    .card { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px; }
+    .card h2 { font-size: 1.1rem; margin-bottom: 16px; border-bottom: 2px solid #f4f4f4; padding-bottom: 10px; }
+    .form-group { margin-bottom: 14px; }
+    label { font-size: 0.85rem; color: #666; display: block; margin-bottom: 4px; }
+    input, select {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 6px;
+      font-size: 0.95rem; transition: border 0.2s;
+    }
+    input:focus, select:focus { outline: none; border-color: #1a1a2e; }
+    .row-2 { display: flex; gap: 12px; }
+    .row-2 .form-group { flex: 1; }
+
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem;
+    }
+    .cart-item:last-of-type { border-bottom: none; }
+    .item-name { font-weight: 600; }
+    .item-qty { color: #999; font-size: 0.85rem; }
+    .item-price { color: #1a1a2e; font-weight: bold; }
+    .btn-remove { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1rem; margin-left: 8px; }
+    .btn-remove:hover { color: #e94560; }
+
+    .summary-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.95rem; }
+    .summary-row.total { font-size: 1.1rem; font-weight: bold; border-top: 2px solid #eee; margin-top: 8px; padding-top: 12px; }
+
+    .btn-order {
+      width: 100%; padding: 14px; background: #e94560; color: white; border: none;
+      border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 16px;
+    }
+    .btn-order:hover { background: #c73652; }
+    .btn-order:disabled { background: #ccc; cursor: not-allowed; }
+
+    .empty-cart { text-align: center; color: #aaa; padding: 20px 0; }
+
+    /* Success screen */
+    .success-screen {
+      display: none; text-align: center; padding: 60px 24px;
+      max-width: 500px; margin: 60px auto;
+      background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .success-screen.show { display: block; }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-screen h2 { font-size: 1.5rem; margin-bottom: 10px; color: #27ae60; }
+    .success-screen p { color: #666; margin-bottom: 24px; }
+    .btn-back { display: inline-block; padding: 12px 24px; background: #1a1a2e; color: white; border-radius: 8px; text-decoration: none; }
+
+    @media(max-width: 650px) {
+      .container { flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/">🛒 E-Commerce Shop</a>
+</header>
+
+<div id="main-content">
+  <div class="container">
+    <div class="col-left">
+      <a href="/" class="back-link">← Continuă cumpărăturile</a>
+      <div class="card">
+        <h2>Date de livrare</h2>
+        <div class="row-2">
+          <div class="form-group">
+            <label>Prenume</label>
+            <input type="text" id="fname" placeholder="Ion" />
+          </div>
+          <div class="form-group">
+            <label>Nume</label>
+            <input type="text" id="lname" placeholder="Popescu" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="ion@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Telefon</label>
+          <input type="tel" id="phone" placeholder="07xx xxx xxx" />
+        </div>
+        <div class="form-group">
+          <label>Adresă</label>
+          <input type="text" id="address" placeholder="Str. Exemplu, nr. 10" />
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label>Oraș</label>
+            <input type="text" id="city" placeholder="București" />
+          </div>
+          <div class="form-group">
+            <label>Județ</label>
+            <input type="text" id="county" placeholder="Ilfov" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Metodă de plată</h2>
+        <div class="form-group">
+          <select id="payment">
+            <option value="card">Card bancar</option>
+            <option value="ramburs">Ramburs la livrare</option>
+            <option value="transfer">Transfer bancar</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card">
+        <h2>Coșul tău</h2>
+        <div id="cart-items"></div>
+      </div>
+      <div class="card">
+        <div class="summary-row"><span>Subtotal</span><span id="subtotal">0 RON</span></div>
+        <div class="summary-row"><span>Livrare</span><span id="shipping">Gratuit</span></div>
+        <div class="summary-row total"><span>Total</span><span id="total">0 RON</span></div>
+        <button class="btn-order" id="btn-order" onclick="placeOrder()">Plasează comanda</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✅</div>
+  <h2>Comandă plasată cu succes!</h2>
+  <p id="success-msg">Îți mulțumim! Comanda ta a fost înregistrată și vei primi un email de confirmare.</p>
+  <a href="/" class="btn-back">Înapoi la magazin</a>
+</div>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+  function renderCart() {
+    const container = document.getElementById("cart-items");
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="empty-cart">Coșul este gol.</div>';
+      document.getElementById("btn-order").disabled = true;
+      return;
+    }
+    container.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <div>
+          <div class="item-name">${i.name}</div>
+          <div class="item-qty">Cantitate: ${i.qty}</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <span class="item-price">${(i.price * i.qty).toFixed(2)} RON</span>
+          <button class="btn-remove" onclick="removeItem(${i.id})">✕</button>
+        </div>
+      </div>`).join("");
+    updateTotals();
+  }
+
+  function updateTotals() {
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const shipping = subtotal > 500 ? 0 : 25;
+    document.getElementById("subtotal").textContent = subtotal.toFixed(2) + " RON";
+    document.getElementById("shipping").textContent = shipping === 0 ? "Gratuit" : shipping + " RON";
+    document.getElementById("total").textContent = (subtotal + shipping).toFixed(2) + " RON";
+  }
+
+  function removeItem(id) {
+    cart = cart.filter(i => i.id !== id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function placeOrder() {
+    const fname = document.getElementById("fname").value.trim();
+    const lname = document.getElementById("lname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const city = document.getElementById("city").value.trim();
+
+    if (!fname || !lname || !email || !address || !city) {
+      alert("Te rugăm completează toate câmpurile obligatorii.");
+      return;
+    }
+
+    localStorage.removeItem("cart");
+    document.getElementById("main-content").style.display = "none";
+    const success = document.getElementById("success-screen");
+    success.classList.add("show");
+    document.getElementById("success-msg").textContent =
+      `Îți mulțumim, ${fname}! Comanda va fi livrată la adresa din ${city}. Vei primi confirmarea pe email.`;
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

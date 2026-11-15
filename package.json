@@ -1,0 +1,18 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "E-commerce simplu cu 6 produse",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "dotenv": "^18.0.10",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
